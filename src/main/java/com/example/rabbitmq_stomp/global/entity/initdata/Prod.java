@@ -10,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 
-@Profile("!prod")
+@Profile("prod")
 @Configuration
 @RequiredArgsConstructor
-public class NotProd {
+public class Prod {
 
     @Autowired
     @Lazy
-    private NotProd self;
+    private Prod self;
 
     private final ChatService chatService;
 
@@ -30,7 +30,7 @@ public class NotProd {
     }
 
     public void work1() {
-System.out.println("데브모드");
+        System.out.println("운영모드");
         ChatRoom room1 = chatService.createRoom("room1");
         ChatRoom room2 = chatService.createRoom("room2");
         ChatRoom room3 = chatService.createRoom("room3");

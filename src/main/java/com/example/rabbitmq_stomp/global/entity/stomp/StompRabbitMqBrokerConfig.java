@@ -3,19 +3,31 @@ package com.example.rabbitmq_stomp.global.entity.stomp;
 
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+@Profile("prod")
 @Configuration
 @EnableWebSocketMessageBroker
 public class StompRabbitMqBrokerConfig implements WebSocketMessageBrokerConfigurer {
     /*
     Rabbitmq 브로커 설정
      */
+    @Value("${spring.rabbitmq.host}")
+    private String rabbitmqHost;
+    @Value("${spring.rabbitmq.port}")
+    private int rabbitmqPort;
+    @Value("${spring.rabbitmq.username}")
+    private String rabbitmqUsername;
+    @Value("${spring.rabbitmq.password}")
+    private String rabbitmqPassword;
+
 
     /*
     simpleBrokerConfig와 동일
@@ -33,12 +45,12 @@ public class StompRabbitMqBrokerConfig implements WebSocketMessageBrokerConfigur
         registry
                 .setApplicationDestinationPrefixes("/app")
                 .enableStompBrokerRelay("/topic")
-                .setRelayHost("localhost") //rabbitmq 호스트
-                .setRelayPort(61613) //rabbitmq 포트
-                .setClientLogin("admin") // Login username
-                .setClientPasscode("admin") // login password
-                .setSystemLogin("admin")
-                .setSystemPasscode("admin");
+                .setRelayHost(rabbitmqHost) //rabbitmq 호스트
+                .setRelayPort(rabbitmqPort) //rabbitmq 포트
+                .setClientLogin(rabbitmqUsername) // Login username
+                .setClientPasscode(rabbitmqPassword) // login password
+                .setSystemLogin(rabbitmqUsername)
+                .setSystemPasscode(rabbitmqPassword);
     }
 
     /*

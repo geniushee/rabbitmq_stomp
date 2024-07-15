@@ -3,8 +3,8 @@ package com.example.rabbitmq_stomp.domain.chat.chat.controller;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatMessage;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatRoom;
 import com.example.rabbitmq_stomp.domain.chat.chat.service.ChatService;
+import com.example.rabbitmq_stomp.global.entity.stomp.StompMessageTemplate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -22,7 +22,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
-    private final RabbitTemplate template;
+    private final StompMessageTemplate template;
 
     @GetMapping("/{roomId}")
     public String showRoom(@PathVariable(name = "roomId")Long roomId,
