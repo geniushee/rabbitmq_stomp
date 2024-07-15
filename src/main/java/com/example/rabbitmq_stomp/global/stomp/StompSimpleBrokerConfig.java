@@ -1,4 +1,4 @@
-package com.example.rabbitmq_stomp.global.entity.stomp;
+package com.example.rabbitmq_stomp.global.stomp;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

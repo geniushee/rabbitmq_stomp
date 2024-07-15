@@ -3,7 +3,7 @@ package com.example.rabbitmq_stomp.domain.chat.chat.controller;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatMessage;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatRoom;
 import com.example.rabbitmq_stomp.domain.chat.chat.service.ChatService;
-import com.example.rabbitmq_stomp.global.entity.stomp.StompMessageTemplate;
+import com.example.rabbitmq_stomp.global.stomp.StompMessageTemplate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -50,6 +50,7 @@ public class ChatController {
 
     public record CreateMessageReqBody(String writerName, String body){}
 
+    // 메세징이라서 http를 사용하지 못한다.
     @MessageMapping("/chat/{roomId}/messages/create")
     public void createMessage(
             CreateMessageReqBody createMessageReqBody,

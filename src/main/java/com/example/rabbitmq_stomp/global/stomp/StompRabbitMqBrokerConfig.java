@@ -1,4 +1,4 @@
-package com.example.rabbitmq_stomp.global.entity.stomp;
+package com.example.rabbitmq_stomp.global.stomp;
 
 
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;

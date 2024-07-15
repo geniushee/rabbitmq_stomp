@@ -1,0 +1,19 @@
+<h1>로그인 페이지</h1>
+
+<form th:action="@{/member/login}" method="post">
+    <div>
+        <label>username :
+            <input type="text" name="username" id="username" placeholder="username">
+        </label>
+    </div>
+    <div>
+        <label>
+            password :
+            <input type="password" name="password" id="password" placeholder="password">
+        </label>
+    </div>
+
+    <div>
+        <button type="submit">로그인</button>
+    </div>
+</form>
