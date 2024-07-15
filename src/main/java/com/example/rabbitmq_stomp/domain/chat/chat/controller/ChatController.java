@@ -4,6 +4,9 @@ import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatMessage;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatRoom;
 import com.example.rabbitmq_stomp.domain.chat.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatService chatService;
+    private final SimpMessagingTemplate template;
 
     @GetMapping("/{roomId}")
     public String showRoom(@PathVariable(name = "roomId")Long roomId,
@@ -36,5 +40,18 @@ public class ChatController {
         List<ChatMessage> messages = chatService.findMessagesByRoomId(roomId);
 
         return messages;
+    }
+
+    public record CreateMessageReqBody(String writerName, String body){}
+
+    @MessageMapping("/chat/{roomId}/messages/create")
+    public void createMessage(
+            CreateMessageReqBody createMessageReqBody,
+            @DestinationVariable long roomId
+    ){
+        ChatRoom chatRoom = chatService.findRoomById(roomId).get();
+
+        ChatMessage chatMessage = chatService.writeMessage(chatRoom, createMessageReqBody.writerName(), createMessageReqBody.body());
+        template.convertAndSend("/topic/chat" + roomId + "MessageCreated", chatMessage);
     }
 }

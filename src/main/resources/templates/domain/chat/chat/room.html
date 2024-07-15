@@ -1,3 +1,6 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 <style>
     .chat-message {
     display : flex;
@@ -6,7 +9,20 @@
 </style>
 
 <script th:inline="javascript">
+    const socket = new SockJS('/ws')
+    const stompClient = Stomp.over(socket);
+
     const chatRoomId = /*[[${chatRoom.id}]]*/ 0;
+
+    stompClient.connect({}, function (frame){
+        console.log("connected: " + frame);
+
+        /* chat1Message 이벤트가 발생하면 function을 실행*/
+        stompClient.subscribe(`/topic/chat${chatRoomId}MessageCreated`, function (data){
+            const jsonData = JSON.parse(data.body);
+            drawChatMessage(jsonData);
+        })
+    })
 
     async function loadChatMessages(){
         try{
@@ -74,7 +90,10 @@
         const writerName = form.writerName.value.trim();
         const body = form.body.value.trim();
 
-        alter(writerName + ' ' + body);
+        stompClient.send(`/app/chat/${chatRoomId}/messages/create`,
+        {},
+        JSON.stringify({writerName, body})
+        );
     }
 
 </script>
