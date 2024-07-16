@@ -33,7 +33,6 @@ public class SecurityConfig {
                             .permitAll();
                 })
 //                .sessionManagement(AbstractHttpConfigurer::disable) // 세션 미사용
-                .formLogin(AbstractHttpConfigurer::disable) // jwt토큰으로 변경
 //                .addFilterBefore(new JwtFilterChain(), UsernamePasswordAuthenticationFilter.class)
         ;
 
