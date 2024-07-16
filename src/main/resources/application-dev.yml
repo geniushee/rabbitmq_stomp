@@ -22,6 +22,9 @@ spring:
     virtual:
       enabled: true
 
+jwt:
+  secretKey: ${custom.jwt.secret}
+
 logging:
   level:
     com.example.rabbitmq_stomp: debug

@@ -27,6 +27,8 @@ spring:
     username: ${custom.prod.rabbitmq.username}
     password: ${custom.prod.rabbitmq.password}
 
+jwt:
+  secretKey: ${custom.jwt.secret}
 
 
 logging:

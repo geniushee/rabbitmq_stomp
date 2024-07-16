@@ -32,12 +32,10 @@ public class SecurityConfig {
                             .requestMatchers("/**")
                             .permitAll();
                 })
-                .formLogin(loigin ->
-                        loigin.loginPage("/member/login")
-                                .usernameParameter("username")
-                                .passwordParameter("password")
-                                .defaultSuccessUrl("/")
-                );
+//                .sessionManagement(AbstractHttpConfigurer::disable) // 세션 미사용
+                .formLogin(AbstractHttpConfigurer::disable) // jwt토큰으로 변경
+//                .addFilterBefore(new JwtFilterChain(), UsernamePasswordAuthenticationFilter.class)
+        ;
 
 
         return http.build();
