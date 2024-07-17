@@ -2,9 +2,11 @@ package com.example.rabbitmq_stomp.global.jwt;
 
 import com.example.rabbitmq_stomp.global.config.AppConfig;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,8 @@ import java.util.Map;
 public class JwtUtil {
     private static final String SECRET_KEY = AppConfig.getJwtSecretKey();
 
-    private static Date ACCESSTOKEN_EXPIRATION;
-    private static Date REFRESHTOKEN_EXPIRATION;
+    private static Duration ACCESSTOKEN_EXPIRATION = Duration.ofHours(12);
+    private static Duration REFRESHTOKEN_EXPIRATION = Duration.ofDays(365);
 
     public static SecretKey getSecretKey(){
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
@@ -27,7 +29,7 @@ public class JwtUtil {
     }
 
 
-    public static Cookie createCookie(String tokenName, Map<Object, Object> data) {
+    public static Cookie createCookie(String tokenName, Map<String, Object> data) {
         String token = encode(tokenName, data);
         Cookie cookie  = new Cookie(tokenName, token);
         cookie.setPath("/");
@@ -40,7 +42,7 @@ public class JwtUtil {
         return createCookie(tokenName, null);
     }
 
-    private static String encode(String tokenName, Map<Object, Object> data) {
+    private static String encode(String tokenName, Map<String, Object> data) {
         Claims claims = Jwts.claims()
                 .add("type", tokenName)
                 .add("data", data)
@@ -59,23 +61,43 @@ public class JwtUtil {
     private static Date getTokenExpiration(String tokenName){
         Instant nowIn = Instant.now();
         Date token = null;
+
         if(tokenName.equals("accessToken")){
-            if(ACCESSTOKEN_EXPIRATION == null){
-                Duration duration = Duration.ofHours(12);
-                ACCESSTOKEN_EXPIRATION = Date.from(nowIn.plus(duration));
-            }
-            token = ACCESSTOKEN_EXPIRATION;
+            token = Date.from(nowIn.plus(ACCESSTOKEN_EXPIRATION));
         }
 
         if(tokenName.equals("refreshToken")){
-            if(REFRESHTOKEN_EXPIRATION == null){
-                Duration duration = Duration.ofDays(365);
-                REFRESHTOKEN_EXPIRATION = Date.from(nowIn.plus(duration));
-            }
-            token = REFRESHTOKEN_EXPIRATION;
+            token = Date.from(nowIn.plus(REFRESHTOKEN_EXPIRATION));
         }
 
         return token;
     }
 
+    public static boolean validateToken(String accessToken) {
+        return !isExpired(accessToken);
+    }
+
+    private static boolean isExpired(String token) {
+        try{
+            Date ex = getClaims(token)
+                    .getExpiration();
+            return ex != null && ex.before(new Date());
+        }catch(ExpiredJwtException | SignatureException e){
+            return true;
+        }
+    }
+
+    public static Claims getClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public static Map<String, Object> getDataFrom(String tokenValue) {
+        Map<String, Object> payloadData = (Map<String, Object>) getClaims(tokenValue).get("data");
+
+        return payloadData;
+    }
 }

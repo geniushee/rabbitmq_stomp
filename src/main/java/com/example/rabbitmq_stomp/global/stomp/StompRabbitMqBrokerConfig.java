@@ -21,13 +21,12 @@ public class StompRabbitMqBrokerConfig implements WebSocketMessageBrokerConfigur
      */
     @Value("${spring.rabbitmq.host}")
     private String rabbitmqHost;
-    @Value("${spring.rabbitmq.port}")
-    private int rabbitmqPort;
+    @Value("${spring.rabbitmq.stompPort}")
+    private int rabbitmqStompPort;
     @Value("${spring.rabbitmq.username}")
     private String rabbitmqUsername;
     @Value("${spring.rabbitmq.password}")
     private String rabbitmqPassword;
-
 
     /*
     simpleBrokerConfig와 동일
@@ -46,7 +45,7 @@ public class StompRabbitMqBrokerConfig implements WebSocketMessageBrokerConfigur
                 .setApplicationDestinationPrefixes("/app")
                 .enableStompBrokerRelay("/topic")
                 .setRelayHost(rabbitmqHost) //rabbitmq 호스트
-                .setRelayPort(rabbitmqPort) //rabbitmq 포트
+                .setRelayPort(rabbitmqStompPort) //rabbitmq stomp 포트
                 .setClientLogin(rabbitmqUsername) // Login username
                 .setClientPasscode(rabbitmqPassword) // login password
                 .setSystemLogin(rabbitmqUsername)

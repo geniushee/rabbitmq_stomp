@@ -1,0 +1,11 @@
+<ol th:each="chatRoom, stat : ${list}">
+    <li>
+        <a th:href="@{'/chat/' + ${chatRoom.RoomId}}">
+            <p>RoomId: <span th:text="${chatRoom.RoomId}"></span></p>
+            <p>RoomName: <span th:text="${chatRoom.RoomName}"></span></p>
+            <p>Creater: <span th:text="${chatRoom.Creater}"></span></p>
+        </a>
+    </li>
+
+
+</ol>

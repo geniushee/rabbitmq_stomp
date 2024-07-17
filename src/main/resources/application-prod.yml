@@ -24,6 +24,7 @@ spring:
   rabbitmq:
     host: ${custom.prod.rabbitmq.host}
     port: ${custom.prod.rabbitmq.port}
+    stompPort: ${custom.prod.rabbitmq.stompPort}
     username: ${custom.prod.rabbitmq.username}
     password: ${custom.prod.rabbitmq.password}
 

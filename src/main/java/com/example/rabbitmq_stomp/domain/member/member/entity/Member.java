@@ -6,7 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,11 +19,16 @@ public class Member extends BaseTime {
     private String password;
     private String refreshToken;
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> list = List.of(new SimpleGrantedAuthority("ROLE_MEMBER"));
-        if(this.username.contains("admin")){
-            list.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }
+    public List<? extends GrantedAuthority> getAuthorities() {
+        return getAuthoritiesAsStringList().stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+    }
+
+    public List<String> getAuthoritiesAsStringList(){
+        List<String> list = new ArrayList<>();
+        list.add("ROLE_USER");
+        if(username.equals("admin")) list.add("ROLE_ADMIN");
         return list;
     }
 }

@@ -13,6 +13,6 @@ public class StompRabbitMessageTemplate implements StompMessageTemplate {
 
     @Override
     public void convertAndSend(String exchange, String routingKey, Object object) {
-        template.convertAndSend(exchange, routingKey, object);
+        template.convertAndSend("amq."+exchange, routingKey, object);
     }
 }

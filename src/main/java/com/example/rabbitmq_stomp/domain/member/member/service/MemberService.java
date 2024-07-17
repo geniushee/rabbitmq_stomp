@@ -2,15 +2,11 @@ package com.example.rabbitmq_stomp.domain.member.member.service;
 
 import com.example.rabbitmq_stomp.domain.member.member.entity.Member;
 import com.example.rabbitmq_stomp.domain.member.member.repository.MemberRepository;
-import com.example.rabbitmq_stomp.global.jwt.JwtUtil;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -43,11 +39,11 @@ public class MemberService {
         return member;
     }
 
-    public Cookie[] createTokens(HttpServletResponse response, Member member) {
-        Map<Object, Object> data = Map.of("username",member.getUsername());
-        Cookie accessToken = JwtUtil.createCookie("accessToken", data);
-        Cookie refreshToken = JwtUtil.createCookie("refreshToken");
+    public Optional<Member> findById(Long id) {
+        return memberRepository.findById(id);
+    }
 
-        return new Cookie[]{accessToken, refreshToken};
+    public Member findReferenceById(Long id) {
+        return memberRepository.getReferenceById(id);
     }
 }

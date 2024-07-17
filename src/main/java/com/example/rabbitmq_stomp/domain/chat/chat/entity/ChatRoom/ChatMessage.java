@@ -1,7 +1,7 @@
 package com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom;
 
+import com.example.rabbitmq_stomp.domain.member.member.entity.Member;
 import com.example.rabbitmq_stomp.global.entity.BaseTime;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
@@ -14,9 +14,9 @@ import lombok.*;
 @Builder
 public class ChatMessage extends BaseTime {
     @ManyToOne
-    @JsonIgnore //Json의 직렬화/역직렬화 무시
     private ChatRoom chatRoom;
-    private String writerName;
+    @ManyToOne
+    private Member writer;
     private String body;
 
 }

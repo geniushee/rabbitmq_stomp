@@ -34,26 +34,28 @@ public class NotProd {
 
     public void work1() {
         System.out.println("데브모드");
-        ChatRoom room1 = chatService.createRoom("room1");
-        ChatRoom room2 = chatService.createRoom("room2");
-        ChatRoom room3 = chatService.createRoom("room3");
+
 
         Member member1 = memberService.register("user1", "1234");
         Member member2 = memberService.register("user2", "1234");
         Member member3 = memberService.register("user3", "1234");
 
-        chatService.writeMessage(room1,member1.getUsername(), "message1");
-        chatService.writeMessage(room1,member1.getUsername(), "message2");
-        chatService.writeMessage(room1, member1.getUsername(), "message3");
+        ChatRoom room1 = chatService.createRoom(member1,"room1");
+        ChatRoom room2 = chatService.createRoom(member2,"room2");
+        ChatRoom room3 = chatService.createRoom(member3,"room3");
 
-        chatService.writeMessage(room1, member2.getUsername(), "message4");
-        chatService.writeMessage(room1, member2.getUsername(), "message5");
+        chatService.writeMessage(room1,member1, "message1");
+        chatService.writeMessage(room1,member1, "message2");
+        chatService.writeMessage(room1, member1, "message3");
 
-        chatService.writeMessage(room1, member3.getUsername(), "message6");
+        chatService.writeMessage(room1, member2, "message4");
+        chatService.writeMessage(room1, member2, "message5");
 
-        chatService.writeMessage(room2, member1.getUsername(), "message7");
-        chatService.writeMessage(room2, member2.getUsername(), "message8");
+        chatService.writeMessage(room1, member3, "message6");
 
-        chatService.writeMessage(room3, member1.getUsername(), "message9");
+        chatService.writeMessage(room2, member1, "message7");
+        chatService.writeMessage(room2, member2, "message8");
+
+        chatService.writeMessage(room3, member1, "message9");
     }
 }

@@ -1,9 +1,11 @@
 package com.example.rabbitmq_stomp.domain.chat.chat.service;
 
+import com.example.rabbitmq_stomp.domain.chat.chat.dto.ChatRoomDto;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatMessage;
 import com.example.rabbitmq_stomp.domain.chat.chat.entity.ChatRoom.ChatRoom;
 import com.example.rabbitmq_stomp.domain.chat.chat.repository.ChatMessageRepository;
 import com.example.rabbitmq_stomp.domain.chat.chat.repository.ChatRoomRepository;
+import com.example.rabbitmq_stomp.domain.member.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,18 +30,24 @@ public class ChatService {
     }
 
     @Transactional
-    public ChatRoom createRoom(String roomName) {
+    public ChatRoom createRoom(Member creater, String roomName) {
         return chatRepository.save(ChatRoom.builder()
-                .name(roomName)
+                .creater(creater)
+                .roomName(roomName)
                 .build());
     }
 
-    public ChatMessage writeMessage(ChatRoom room1, String writerName, String body) {
+    public ChatMessage writeMessage(ChatRoom room1, Member writer, String body) {
         ChatMessage message = ChatMessage.builder()
                 .chatRoom(room1)
-                .writerName(writerName)
+                .writer(writer)
                 .body(body)
                 .build();
         return chatMessageRepository.save(message);
+    }
+
+    public List<ChatRoomDto> findAll() {
+            return chatRepository.findAll().stream()
+                    .map(ChatRoomDto::new).toList();
     }
 }
