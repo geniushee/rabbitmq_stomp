@@ -57,7 +57,6 @@ public class JwtFilterChain extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(securityUser, "", authorities)
                         );
             }
-
         }
 
         filterChain.doFilter(request, response);

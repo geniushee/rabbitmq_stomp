@@ -51,7 +51,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         for(Cookie ck : cookies){
             response.addCookie(ck);
         }
-
+        rq.destroySecurityScontextAuth(); // 쿠키만 사용하기 위해 컨텍스트 클리어
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

@@ -14,4 +14,20 @@ public class AppConfig {
     public void setJwtSecretKey(String key){
         jwtSecretKey = key;
     }
+
+    @Getter
+    private static String cookieDomain;
+
+    @Value("${custom.prod.cookieDomain}")
+    public void setCookieDomain(String domain){
+        cookieDomain = domain;
+    }
+
+    @Getter
+    private static String frontUrl;
+
+    @Value("${custom.prod.frontUrl}")
+    public void setFrontUrl(String url){
+
+    }
 }

@@ -34,6 +34,8 @@ public class JwtUtil {
         Cookie cookie  = new Cookie(tokenName, token);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        // todo sameSite 속성 추가 필요
 
         return cookie;
     }

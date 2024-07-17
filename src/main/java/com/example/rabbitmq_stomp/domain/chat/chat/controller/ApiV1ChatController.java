@@ -9,28 +9,21 @@ import com.example.rabbitmq_stomp.domain.member.member.dto.MemberDto;
 import com.example.rabbitmq_stomp.domain.member.member.entity.Member;
 import com.example.rabbitmq_stomp.domain.member.member.service.MemberService;
 import com.example.rabbitmq_stomp.global.rq.Rq;
-import com.example.rabbitmq_stomp.global.security.SecurityUser;
 import com.example.rabbitmq_stomp.global.stomp.StompMessageTemplate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-@Controller
-@RequestMapping("/chat")
+@RestController
+@RequestMapping("/api/v1/chat")
 @RequiredArgsConstructor
-public class ChatController {
+public class ApiV1ChatController {
 
     private final ChatService chatService;
     private final StompMessageTemplate template;
@@ -73,27 +66,27 @@ public class ChatController {
     public record CreateMessageReqBody(Long memberId, String body){}
 
     // Websocket scope라서 스콥이 달라서 Rq(request scope)를 사용하지 못한다.
-    @MessageMapping("/chat/{roomId}/messages/create")
-    @Transactional(readOnly = true)
-    public void createMessage(
-            CreateMessageReqBody createMessageReqBody,
-            @DestinationVariable long roomId,
-            Authentication principle
-    ){
-        ChatRoom chatRoom = chatService.findRoomById(roomId).get();
-        //
-        SecurityUser securityUser = (SecurityUser) principle.getPrincipal();
-        Member member = memberService.findById(securityUser.getId()).get();
-
-        ChatMessage chatMessage = chatService.writeMessage(chatRoom, member, createMessageReqBody.body());
-        // 기본으로 생성되는 amq.topic exchange로 설정, routingkey 는 연결된 큐들 중 해당 패턴에 해당하는 큐로 연결
-        template.convertAndSend("topic", "chat" + roomId +"MessageCreated",new ChatMessageDto(chatMessage));
-    }
+//    @MessageMapping("/chat/{roomId}/messages/create")
+//    @Transactional(readOnly = true)
+//    public void createMessageApi(
+//            CreateMessageReqBody createMessageReqBody,
+//            @DestinationVariable long roomId,
+//            Authentication principle
+//    ){
+//        ChatRoom chatRoom = chatService.findRoomById(roomId).get();
+//        //
+//        SecurityUser securityUser = (SecurityUser) principle.getPrincipal();
+//        Member member = memberService.findById(securityUser.getId()).get();
+//
+//        ChatMessage chatMessage = chatService.writeMessage(chatRoom, member, createMessageReqBody.body());
+//        // 기본으로 생성되는 amq.topic exchange로 설정, routingkey 는 연결된 큐들 중 해당 패턴에 해당하는 큐로 연결
+//        template.convertAndSend("topic", "chat" + roomId +"MessageCreated",new ChatMessageDto(chatMessage));
+//    }
 
     @GetMapping("/roomList")
-    public String getChatRoomList(Model model){
+    public ResponseEntity<?> getChatRoomList(){
         List<ChatRoomDto> list = chatService.findAll();
-        model.addAttribute("list", list);
-        return "domain/chat/chat/roomList";
+
+        return ResponseEntity.ok(list);
     }
 }

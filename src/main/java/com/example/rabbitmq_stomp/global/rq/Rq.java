@@ -52,4 +52,8 @@ public class Rq {
         }
         return isLogin;
     }
+
+    public void destroySecurityScontextAuth() {
+        request.getSession().removeAttribute("SPRING_SECURITY_CONTEXT");
+    }
 }

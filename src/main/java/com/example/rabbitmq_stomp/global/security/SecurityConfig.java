@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,19 +34,15 @@ public class SecurityConfig {
                 })
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .securityMatcher("/**")
                 .authorizeHttpRequests(authorization -> {
                     authorization
                             .requestMatchers("/h2-console/**")
                             .permitAll();
-                    authorization
-                            .requestMatchers("/**")
-                            .permitAll();
                 })
-                // 세션 미사용
-                .sessionManagement(session -> {
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-                })
+                // API인 경우 세션 미사용, 현재는 쿠키만 사용하고 기타 다른 기능을 사용하기 위해 login handler에서 컨텍스트만 제거
+//                .sessionManagement(session -> {
+//                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//                })
                 .formLogin(formlogin ->
                         formlogin.loginPage("/member/login")
                                 .permitAll()
